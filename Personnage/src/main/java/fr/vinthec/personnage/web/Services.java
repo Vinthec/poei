@@ -1,6 +1,7 @@
 package fr.vinthec.personnage.web;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -48,6 +49,12 @@ public class Services {
 	public Univers getUnivers(@PathVariable("id") Long id) throws NotFoundException {
 		return universRepository.findById(id)
 				.orElseThrow(() -> new NotFoundException("Univers no "+ id + " not found"));
+		
+	}
+	
+	@GetMapping("/univers2/{id}")
+	public Optional<Univers> getUnivers2(@PathVariable("id") Long id) throws NotFoundException {
+		return universRepository.findById(id);
 		
 	}
 	
