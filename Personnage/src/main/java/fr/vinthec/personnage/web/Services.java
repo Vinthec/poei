@@ -77,7 +77,7 @@ public class Services {
 		if(like == null) {
 			like = "%"+contient+"%";
 		}
-		return universRepository.findUniversLike(like);
+		return universRepository.findByNomLike(like);
 	}
 	
 
