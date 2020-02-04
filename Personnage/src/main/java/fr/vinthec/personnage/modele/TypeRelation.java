@@ -3,39 +3,42 @@ package fr.vinthec.personnage.modele;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.annotations.NaturalId;
 
 @Entity
-public class Univers {
-	
+public class TypeRelation {
+
 	@Id
 	@GeneratedValue
-	private Long id;
+	private Long id; 
 	
-	@NotEmpty
-	private String nom;
-
-	Univers() {
+	@NaturalId
+	private String designation;
+	
+	
+	public TypeRelation() {
 	}
 
-	public Univers(@NotEmpty String nom) {
+	
+
+	public TypeRelation(String designation) {
 		super();
-		this.nom = nom;
+		this.designation = designation;
 	}
 
-	public String getNom() {
-		return nom;
-	}
+
 
 	public Long getId() {
 		return id;
 	}
-	
-	
 
-	public void setNom(String nom) {
-		this.nom = nom;
+
+	public String getDesignation() {
+		return designation;
 	}
+
+
 
 	@Override
 	public int hashCode() {
@@ -45,6 +48,8 @@ public class Univers {
 		return result;
 	}
 
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -53,7 +58,7 @@ public class Univers {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Univers other = (Univers) obj;
+		TypeRelation other = (TypeRelation) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

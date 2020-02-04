@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.springframework.data.repository.query.Param;

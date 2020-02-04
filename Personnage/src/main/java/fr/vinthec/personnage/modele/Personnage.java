@@ -1,40 +1,52 @@
 package fr.vinthec.personnage.modele;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.NaturalId;
 
 @Entity
-public class Univers {
-	
+public class Personnage {
+
 	@Id
 	@GeneratedValue
-	private Long id;
+	private Long id; 
 	
-	@NotEmpty
+	@NaturalId
 	private String nom;
+	
+	private Genre genre;
+	
+	@ManyToOne
+	@NaturalId
+	private Maison maison;
+	
+	@ManyToMany(mappedBy = "personnages")
+	private Set<Acteur> acteurs;
+	
+	public Personnage() {}
 
-	Univers() {
-	}
-
-	public Univers(@NotEmpty String nom) {
+	public Personnage(String nom, Genre genre) {
 		super();
 		this.nom = nom;
+		this.genre = genre;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public String getNom() {
 		return nom;
 	}
 
-	public Long getId() {
-		return id;
-	}
-	
-	
-
-	public void setNom(String nom) {
-		this.nom = nom;
+	public Genre getGenre() {
+		return genre;
 	}
 
 	@Override
@@ -53,7 +65,7 @@ public class Univers {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Univers other = (Univers) obj;
+		Personnage other = (Personnage) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -61,7 +73,6 @@ public class Univers {
 			return false;
 		return true;
 	}
-
 	
 	
 	

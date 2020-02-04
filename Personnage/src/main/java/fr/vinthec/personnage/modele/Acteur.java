@@ -1,24 +1,30 @@
 package fr.vinthec.personnage.modele;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.ManyToMany;
 
 @Entity
-public class Univers {
-	
+public class Acteur {
+
+	public Acteur() {}
+
 	@Id
 	@GeneratedValue
 	private Long id;
 	
-	@NotEmpty
-	private String nom;
+	private String nom; 
+	
+	private LocalDate dateNaissance;
+	
+	@ManyToMany
+	private Set<Personnage> personnages;
 
-	Univers() {
-	}
-
-	public Univers(@NotEmpty String nom) {
+	public Acteur(String nom) {
 		super();
 		this.nom = nom;
 	}
@@ -27,14 +33,24 @@ public class Univers {
 		return nom;
 	}
 
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
+	public LocalDate getDateNaissance() {
+		return dateNaissance;
+	}
+
+	public void setDateNaissance(LocalDate dateNaissance) {
+		this.dateNaissance = dateNaissance;
+	}
+
 	public Long getId() {
 		return id;
 	}
-	
-	
 
-	public void setNom(String nom) {
-		this.nom = nom;
+	public Set<Personnage> getPersonnages() {
+		return personnages;
 	}
 
 	@Override
@@ -53,7 +69,7 @@ public class Univers {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Univers other = (Univers) obj;
+		Acteur other = (Acteur) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -61,7 +77,6 @@ public class Univers {
 			return false;
 		return true;
 	}
-
 	
 	
 	
