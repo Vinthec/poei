@@ -1,5 +1,6 @@
 package fr.vinthec.personnage.modele;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -31,16 +32,12 @@ public class Relation {
 	public Relation() {
 	}
 
-	public Relation(Long id, int niveau, Personnage cible, TypeRelation type) {
-		super();
-		this.id = id;
+	public Relation( Personnage cible, TypeRelation type, int niveau) {
 		this.niveau = niveau;
 		this.cible = cible;
 		this.type = type;
 	}
-	public Relation(Long id, int niveau, Relation relation) {
-		super();
-		this.id = id;
+	public Relation( int niveau, Relation relation) {
 		this.niveau = niveau;
 		this.cible = relation.source;
 		this.type = relation.type;

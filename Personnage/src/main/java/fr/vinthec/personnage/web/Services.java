@@ -22,10 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.Lists;
 
+import fr.vinthec.personnage.exceptions.EntityNotFoundException;
 import fr.vinthec.personnage.exceptions.NotFoundException;
+import fr.vinthec.personnage.modele.Acteur;
 import fr.vinthec.personnage.modele.Genre;
 import fr.vinthec.personnage.modele.Maison;
 import fr.vinthec.personnage.modele.Personnage;
+import fr.vinthec.personnage.modele.TypeRelation;
 import fr.vinthec.personnage.modele.Univers;
 import fr.vinthec.personnage.resources.GenericEntitiesRepository;
 import fr.vinthec.personnage.resources.UniversRepository;
@@ -47,7 +50,7 @@ public class Services {
 	
 	@GetMapping("/tmp_2") 
 	@Transactional
-	public String remplirLaBase() {
+	public String remplirLaBase() throws EntityNotFoundException {
 		Univers u1 = universRepository.save(new Univers("Terre"));
 		Univers u2 = universRepository.save(new Univers("Harry Potter"));
 		Univers u3 = universRepository.save(new Univers("Game of Throne"));
@@ -57,9 +60,13 @@ public class Services {
 		repository.save(new Maison("Serpentard", u2), Maison.class);
 		Personnage p1 = repository.save(new Personnage("Harry Potter", Genre.MASCULIN), Personnage.class);
 		Personnage p2 = repository.save(new Personnage("Hermione Granger", Genre.FEMININ), Personnage.class);
-		
-			
-		return "OK";
+		p1.setMaison(m);
+		p2.setMaison(m);
+		Acteur acteur = repository.save(new Acteur("Baniel", "Radcliffe"), Acteur.class);
+		p1.addActeur(acteur);
+		repository.save(p1, Personnage.class);
+		repository.save(p2, Personnage.class);
+		return "OK";	
 		
 	}
 	

@@ -2,6 +2,7 @@ package fr.vinthec.personnage.modele;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,6 +10,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.NaturalId;
+
+import com.google.common.collect.Sets;
 
 @Entity
 public class Personnage {
@@ -23,11 +26,13 @@ public class Personnage {
 	private Genre genre;
 	
 	@ManyToOne
-	@NaturalId
 	private Maison maison;
 	
-	@ManyToMany(mappedBy = "personnages")
-	private Set<Acteur> acteurs;
+	@ManyToMany(mappedBy = "personnages", cascade = CascadeType.ALL )
+	private Set<Acteur> acteurs = Sets.newHashSet();
+	
+	@ManyToMany
+	private Set<Relation> relations = Sets.newHashSet();
 	
 	public Personnage() {}
 
@@ -49,6 +54,24 @@ public class Personnage {
 		return genre;
 	}
 
+
+	public void addActeur(Acteur acteur) {
+		acteurs.add(acteur);
+	}
+	
+	
+
+	public void addRelationReciproque(Personnage p2, TypeRelation amitie, int niveau) {
+		Relation r = new Relation( p2, amitie, niveau);
+		relations.add(r);
+		p2.relations.add(new Relation(niveau,r));
+	}
+	
+	
+	public void setMaison(Maison maison) {
+		this.maison = maison;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -73,6 +96,8 @@ public class Personnage {
 			return false;
 		return true;
 	}
+
+
 	
 	
 	

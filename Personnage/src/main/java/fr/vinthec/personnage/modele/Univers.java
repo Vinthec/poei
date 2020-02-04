@@ -1,11 +1,17 @@
 package fr.vinthec.personnage.modele;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.annotations.NaturalId;
+
+import com.google.common.collect.Sets;
 
 @Entity
 public class Univers {
@@ -18,6 +24,10 @@ public class Univers {
 	@NaturalId
 	private String nom;
 
+	
+	@OneToMany(mappedBy = "univers")
+	private Set<Maison> maisons = Sets.newHashSet();
+	
 	Univers() {
 	}
 
