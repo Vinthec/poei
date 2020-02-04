@@ -73,8 +73,10 @@ public class Services {
 	}
 	
 	@GetMapping("/univers/search")
-	public List<Univers> searchUnivers(@Param("like") String like) {
-		
+	public List<Univers> searchUnivers(@Param("like") String like, @Param("contient") String contient) {
+		if(like == null) {
+			like = "%"+contient+"%";
+		}
 		return universRepository.findUniversLike(like);
 	}
 	
