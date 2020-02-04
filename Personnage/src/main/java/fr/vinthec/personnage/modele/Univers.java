@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.annotations.NaturalId;
+
 @Entity
 public class Univers {
 	
@@ -13,6 +15,7 @@ public class Univers {
 	private Long id;
 	
 	@NotEmpty
+	@NaturalId
 	private String nom;
 
 	Univers() {

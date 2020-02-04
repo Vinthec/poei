@@ -53,6 +53,19 @@
 			<artifactId>guava</artifactId>
 			<version>28.2-jre</version>
 		</dependency>
+		
+			<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections-maven</artifactId>
+			<version>0.9.9-RC1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jfrog.jade.plugins.common</groupId>
+					<artifactId>jade-plugin-common</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 
 	</dependencies>
 

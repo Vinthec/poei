@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
+import javax.annotation.Resources;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.ParameterScriptAssert;
@@ -21,8 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.collect.Lists;
 
 import fr.vinthec.personnage.exceptions.NotFoundException;
+import fr.vinthec.personnage.modele.Genre;
 import fr.vinthec.personnage.modele.Maison;
+import fr.vinthec.personnage.modele.Personnage;
 import fr.vinthec.personnage.modele.Univers;
+import fr.vinthec.personnage.resources.GenericEntitiesRepository;
 import fr.vinthec.personnage.resources.UniversRepository;
 
 @RestController
@@ -31,17 +36,29 @@ public class Services {
 	@Resource
 	private transient UniversRepository universRepository;
 	
+	@Resource
+	private transient GenericEntitiesRepository repository;
+	
 	@GetMapping("/test")
 	public Maison inventeMaison()  {
 		Univers u = new Univers("Terre");
 		return new Maison("POEI", u);
 	}
 	
-	@GetMapping("/tmp_1") 
+	@GetMapping("/tmp_2") 
+	@Transactional
 	public String remplirLaBase() {
-		universRepository.save(new Univers("Terre"));
-		universRepository.save(new Univers("Harry Potter"));
-		universRepository.save(new Univers("Game of Throne"));
+		Univers u1 = universRepository.save(new Univers("Terre"));
+		Univers u2 = universRepository.save(new Univers("Harry Potter"));
+		Univers u3 = universRepository.save(new Univers("Game of Throne"));
+		repository.save(new Maison("poei", u1), Maison.class);
+		 Maison m = repository.save(new Maison("Gryffondor", u2), Maison.class);
+		repository.save(new Maison("Poufsouffle", u2), Maison.class);
+		repository.save(new Maison("Serpentard", u2), Maison.class);
+		Personnage p1 = repository.save(new Personnage("Harry Potter", Genre.MASCULIN), Personnage.class);
+		Personnage p2 = repository.save(new Personnage("Hermione Granger", Genre.FEMININ), Personnage.class);
+		
+			
 		return "OK";
 		
 	}
@@ -52,7 +69,7 @@ public class Services {
 	}
 	
 	
-	
+
 	
 	@GetMapping("/univers/{id}")
 	public Univers getUnivers(@PathVariable("id") Long id) throws NotFoundException {
@@ -81,7 +98,11 @@ public class Services {
 		return universRepository.findByNomLike(like);
 	}
 	
-
+	@GetMapping("/maison/{id}")
+	public Maison getUnivers(@PathVariable("id") Maison maison) throws NotFoundException {
+		return maison;
+		
+	}
 	
 	@ExceptionHandler( NotFoundException.class)
 	@ResponseStatus(code = HttpStatus.NOT_FOUND )
