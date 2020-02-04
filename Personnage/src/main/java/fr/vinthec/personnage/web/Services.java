@@ -1,10 +1,13 @@
 package fr.vinthec.personnage.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
 
+import org.hibernate.validator.constraints.ParameterScriptAssert;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.common.collect.Lists;
 
 import fr.vinthec.personnage.exceptions.NotFoundException;
 import fr.vinthec.personnage.modele.Maison;
@@ -45,6 +50,9 @@ public class Services {
 		return universRepository.findAll();	
 	}
 	
+	
+	
+	
 	@GetMapping("/univers/{id}")
 	public Univers getUnivers(@PathVariable("id") Long id) throws NotFoundException {
 		return universRepository.findById(id)
@@ -63,10 +71,17 @@ public class Services {
 		return universRepository.save(u);
 		
 	}
+	
+	@GetMapping("/univers/search")
+	public List<Univers> searchUnivers(@Param("like") String like) {
+		
+		return universRepository.findUniversLike(like);
+	}
+	
 
 	
 	@ExceptionHandler( NotFoundException.class)
-	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+	@ResponseStatus(code = HttpStatus.NOT_FOUND )
 	public ExceptionServer handleException(Exception e) {
 			return new ExceptionServer(e);
 	}
