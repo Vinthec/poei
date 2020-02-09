@@ -25,7 +25,7 @@ public class EntitiesConverter implements GenericConverter {
 	private transient GenericConversionService genericConversionService;
 
 	@Resource
-	private transient fr.vinthec.personnage.resources.GenericEntitiesRepository repository;
+	private transient fr.vinthec.personnage.resources.persistance.GenericEntitiesRepository repository;
 
 	@FunctionalInterface
 	private static interface LongGetter<T extends AbstractEntity<Long>> {

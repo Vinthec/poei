@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.resources;
+package fr.vinthec.personnage.resources.persistance;
 
 import java.util.List;
 

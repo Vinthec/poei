@@ -4,10 +4,13 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -23,15 +26,16 @@ public class Personnage {
 	@NaturalId
 	private String nom;
 	
+	@Enumerated(EnumType.STRING)
 	private Genre genre;
 	
 	@ManyToOne
 	private Maison maison;
 	
-	@ManyToMany(mappedBy = "personnages", cascade = CascadeType.ALL )
+	@ManyToMany(cascade = CascadeType.ALL)
 	private Set<Acteur> acteurs = Sets.newHashSet();
 	
-	@ManyToMany
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true )
 	private Set<Relation> relations = Sets.newHashSet();
 	
 	public Personnage() {}

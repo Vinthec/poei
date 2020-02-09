@@ -2,7 +2,10 @@ package fr.vinthec.personnage.web;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.annotation.Resources;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import fr.vinthec.personnage.exceptions.EntityNotFoundException;
@@ -30,8 +34,12 @@ import fr.vinthec.personnage.modele.Maison;
 import fr.vinthec.personnage.modele.Personnage;
 import fr.vinthec.personnage.modele.TypeRelation;
 import fr.vinthec.personnage.modele.Univers;
-import fr.vinthec.personnage.resources.GenericEntitiesRepository;
-import fr.vinthec.personnage.resources.UniversRepository;
+import fr.vinthec.personnage.resources.hpapi.PersonnageApIRepo;
+import fr.vinthec.personnage.resources.hpapi.PersonnageApi;
+import fr.vinthec.personnage.resources.persistance.GenericEntitiesRepository;
+import fr.vinthec.personnage.resources.persistance.MaisonRepository;
+import fr.vinthec.personnage.resources.persistance.PersonnageRepository;
+import fr.vinthec.personnage.resources.persistance.UniversRepository;
 
 @RestController
 public class Services {
@@ -40,7 +48,16 @@ public class Services {
 	private transient UniversRepository universRepository;
 	
 	@Resource
+	private transient PersonnageRepository personnageRepository;
+	
+	@Resource
 	private transient GenericEntitiesRepository repository;
+	
+	@Resource
+	private transient PersonnageApIRepo personnageApIRepo;
+	
+	@Resource
+	private transient MaisonRepository maisonRepository;
 	
 	@GetMapping("/test")
 	public Maison inventeMaison()  {
@@ -52,23 +69,53 @@ public class Services {
 	@Transactional
 	public String remplirLaBase() throws EntityNotFoundException {
 		Univers u1 = universRepository.save(new Univers("Terre"));
-		Univers u2 = universRepository.save(new Univers("Harry Potter"));
-		Univers u3 = universRepository.save(new Univers("Game of Throne"));
+
 		repository.save(new Maison("poei", u1), Maison.class);
-		 Maison m = repository.save(new Maison("Gryffondor", u2), Maison.class);
-		repository.save(new Maison("Poufsouffle", u2), Maison.class);
-		repository.save(new Maison("Serpentard", u2), Maison.class);
-		Personnage p1 = repository.save(new Personnage("Harry Potter", Genre.MASCULIN), Personnage.class);
-		Personnage p2 = repository.save(new Personnage("Hermione Granger", Genre.FEMININ), Personnage.class);
-		p1.setMaison(m);
-		p2.setMaison(m);
-		Acteur acteur = repository.save(new Acteur("Baniel", "Radcliffe"), Acteur.class);
-		p1.addActeur(acteur);
-		repository.save(p1, Personnage.class);
-		repository.save(p2, Personnage.class);
 		return "OK";	
 		
 	}
+	
+	@GetMapping("tmp/GOT")
+	@Transactional
+	public String tmp_4() {
+		Univers u = new Univers("Game of Throne");
+		u.addMaison(new Maison("Stark", u));
+		u.addMaison(new Maison("Lannister", u));
+		u.addMaison(new Maison("Targaryen", u));
+		u.addMaison(new Maison("Baratheon", u));
+		u.addMaison(new Maison("Tyrell", u));
+		u.addMaison(new Maison("Martell", u));
+		u.addMaison(new Maison("Greyjoy", u));
+		u.addMaison(new Maison("Arryn", u));
+		u.addMaison(new Maison("Tully", u));
+		universRepository.save(u);
+		return "OK";
+	}
+	
+	
+	private Map<String, Genre> genres = Map.of("male",Genre.MASCULIN, "female", Genre.FEMININ);
+	private Pattern namePattern = Pattern.compile("\\h*(?<prenom>\\w+)\\h+(?<nom>\\w+)\\h*");
+	
+	@GetMapping ("/tmp/HP")
+	@Transactional
+	public String tmp_3() {
+		Univers univers = universRepository.save(new Univers("Harry Potter"));
+		for (PersonnageApi persoAPI : personnageApIRepo.findPersonnages()) {
+			String houseName = Strings.isNullOrEmpty(persoAPI.getHouse())? "Aucune": persoAPI.getHouse();			
+			Optional<Maison> maison = maisonRepository.findByNom(houseName);
+			if(maison.isEmpty()) {
+				maison = Optional.of(maisonRepository.save(new Maison(houseName, univers)));
+			}
+			Personnage p = new Personnage(persoAPI.getName(), genres.getOrDefault(persoAPI, Genre.NEUTRE));
+			Matcher matcher = namePattern.matcher(persoAPI.getActor());
+			if(matcher.matches()) {
+				p.addActeur(new Acteur(matcher.group("nom"), matcher.group("prenom")));
+			}
+			personnageRepository.save(p);
+		}
+		return "OK";
+	}
+	
 	
 	@GetMapping("/univers")
 	public List<Univers> listUnivers(){
@@ -105,10 +152,16 @@ public class Services {
 		return universRepository.findByNomLike(like);
 	}
 	
-	@GetMapping("/maison/{id}")
+	@GetMapping("/maisons/{id}")
 	public Maison getUnivers(@PathVariable("id") Maison maison) throws NotFoundException {
 		return maison;
 		
+	}
+	
+	@PostMapping("/maisons")
+	@Transactional
+	public Maison createMaison(@RequestBody Maison maison) {
+		return repository.save(maison, Maison.class);
 	}
 	
 	@ExceptionHandler( NotFoundException.class)

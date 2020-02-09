@@ -16,7 +16,7 @@ public class Relation {
 	
 	private int niveau;
 	
-	@ManyToOne 
+	@ManyToOne
 	private Personnage source;
 	
 	@ManyToOne

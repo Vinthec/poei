@@ -2,10 +2,10 @@ package fr.vinthec.personnage.modele;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 
@@ -25,10 +25,10 @@ public class Univers {
 	private String nom;
 
 	
-	@OneToMany(mappedBy = "univers")
+	@OneToMany(mappedBy = "univers", cascade =  CascadeType.ALL )
 	private Set<Maison> maisons = Sets.newHashSet();
 	
-	Univers() {
+	public Univers() {
 	}
 
 	public Univers(@NotEmpty String nom) {
@@ -73,6 +73,10 @@ public class Univers {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public void addMaison(Maison maison) {
+		maisons.add(maison);
 	}
 
 	

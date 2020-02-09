@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "personnage-api.url",
+  "type": "java.lang.String",
+  "description": "L'URL de l'api des personnages"
+}]}

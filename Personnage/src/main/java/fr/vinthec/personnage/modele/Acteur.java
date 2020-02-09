@@ -26,11 +26,12 @@ public class Acteur {
 	
 	private LocalDate dateNaissance;
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "acteurs")
 	private Set<Personnage> personnages = Sets.newHashSet();
 
 
-
+	
+	
 	public Acteur(String nom, String prenom) {
 		super();
 		this.nom = nom;
