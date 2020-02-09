@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Sets;
 
 @Entity
@@ -58,7 +59,8 @@ public class Acteur {
 	public Long getId() {
 		return id;
 	}
-
+	
+	@JsonIgnore
 	public Set<Personnage> getPersonnages() {
 		return personnages;
 	}

@@ -37,7 +37,6 @@ public class EntitiesConverter implements GenericConverter {
 	@PostConstruct
 	private void init() throws NoSuchMethodException, SecurityException {
 		Reflections reflections = new Reflections(AbstractEntity.class.getPackage().getName());
-		@SuppressWarnings("rawtypes")
 		Set<Class<?>> allLongIdentifiableEntities = reflections.getTypesAnnotatedWith(Entity.class);
 		for (Class<?> cl : allLongIdentifiableEntities) {
 			if (cl.getAnnotation(Entity.class) != null) {

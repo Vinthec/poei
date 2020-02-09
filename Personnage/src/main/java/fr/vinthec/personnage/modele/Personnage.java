@@ -29,7 +29,7 @@ public class Personnage {
 	@Enumerated(EnumType.STRING)
 	private Genre genre;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Maison maison;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
@@ -40,10 +40,11 @@ public class Personnage {
 	
 	public Personnage() {}
 
-	public Personnage(String nom, Genre genre) {
+	public Personnage(String nom, Genre genre, Maison maison) {
 		super();
 		this.nom = nom;
 		this.genre = genre;
+		this.maison = maison;
 	}
 
 	public Long getId() {
@@ -99,6 +100,10 @@ public class Personnage {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public Set<Acteur> getActeurs() {
+		return Sets.newHashSet(acteurs);
 	}
 
 

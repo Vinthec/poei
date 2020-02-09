@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "personnage-api.url",
-  "type": "java.lang.String",
-  "description": "L'URL de l'api des personnages"
-}]}
+{"properties": [
+  {
+    "name": "personnage-api.url.harry-potter",
+    "type": "java.lang.String",
+    "description": "A description for 'personnage-api.url.harry-potter'"
+  },
+  {
+    "name": "personnage-api.url.game-of-thrones",
+    "type": "java.lang.String",
+    "description": "A description for 'personnage-api.url.game-of-thrones'"
+  }
+]}

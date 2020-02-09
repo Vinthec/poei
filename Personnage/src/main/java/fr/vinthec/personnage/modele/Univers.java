@@ -2,7 +2,6 @@ package fr.vinthec.personnage.modele;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,19 +14,18 @@ import com.google.common.collect.Sets;
 
 @Entity
 public class Univers {
-	
+
 	@Id
 	@GeneratedValue
 	private Long id;
-	
+
 	@NotEmpty
 	@NaturalId
 	private String nom;
 
-	
-	@OneToMany(mappedBy = "univers", cascade =  CascadeType.ALL )
+	@OneToMany(mappedBy = "univers")
 	private Set<Maison> maisons = Sets.newHashSet();
-	
+
 	public Univers() {
 	}
 
@@ -43,8 +41,6 @@ public class Univers {
 	public Long getId() {
 		return id;
 	}
-	
-	
 
 	public void setNom(String nom) {
 		this.nom = nom;
@@ -75,12 +71,4 @@ public class Univers {
 		return true;
 	}
 
-	public void addMaison(Maison maison) {
-		maisons.add(maison);
-	}
-
-	
-	
-	
-	
 }

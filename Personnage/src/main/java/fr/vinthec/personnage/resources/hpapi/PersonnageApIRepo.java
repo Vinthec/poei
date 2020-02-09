@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface PersonnageApIRepo {
 
-	List<PersonnageApi> findPersonnages();
+	List<PersonnageApi> findPersonnagesHP();
 
+	
+	List<PersonnageApi> findPersonnagesGOT();
 }
