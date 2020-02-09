@@ -50,7 +50,12 @@ public class EntitiesConverter implements GenericConverter {
 	}
 
 	public <T> T convert(Object source, Class<T> targetType) {
-		long id = Long.parseLong((String) source);
+		Long id;
+		if(source instanceof Long) {
+			id = (Long) source;
+		} else {
+			id = Long.parseLong((String) source);
+		}
 		try {
 			return repository.get(id, targetType);
 		} catch (EntityNotFoundException e) {
@@ -68,6 +73,7 @@ public class EntitiesConverter implements GenericConverter {
 		Set<ConvertiblePair> ret = new HashSet<>(converters.size());
 		for (Class<?> clazz : converters) {
 			ret.add(new ConvertiblePair(String.class, clazz));
+			ret.add(new ConvertiblePair(Long.class, clazz));
 		}
 		return ret;
 	}

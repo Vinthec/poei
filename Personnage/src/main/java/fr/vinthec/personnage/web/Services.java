@@ -201,6 +201,11 @@ public class Services {
 		return maison;
 
 	}
+	
+	@GetMapping("/maisons")
+	public List<Maison> allMaisons() {
+		return maisonRepository.findAll();
+	}
 
 	@PostMapping("/maisons")
 	@Transactional
