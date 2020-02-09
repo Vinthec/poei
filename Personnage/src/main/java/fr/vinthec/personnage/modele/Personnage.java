@@ -3,6 +3,7 @@ package fr.vinthec.personnage.modele;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,7 +36,7 @@ public class Personnage {
 	@ManyToMany(cascade = CascadeType.ALL)
 	private Set<Acteur> acteurs = Sets.newHashSet();
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true )
+	@OneToMany(mappedBy = "source" , cascade = CascadeType.ALL)
 	private Set<Relation> relations = Sets.newHashSet();
 	
 	public Personnage() {}
@@ -65,13 +66,12 @@ public class Personnage {
 	}
 	
 	
-
-	public void addRelationReciproque(Personnage p2, TypeRelation amitie, int niveau) {
-		Relation r = new Relation( p2, amitie, niveau);
+	public void addRelation(Personnage p2, TypeRelation type) {
+		Relation r = new Relation( p2, type, 10, this);
 		relations.add(r);
-		p2.relations.add(new Relation(niveau,r));
 	}
 	
+
 	
 	public void setMaison(Maison maison) {
 		this.maison = maison;
@@ -105,6 +105,8 @@ public class Personnage {
 	public Set<Acteur> getActeurs() {
 		return Sets.newHashSet(acteurs);
 	}
+
+
 
 
 	

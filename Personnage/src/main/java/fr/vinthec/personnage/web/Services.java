@@ -1,14 +1,17 @@
 package fr.vinthec.personnage.web;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -23,7 +26,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import fr.vinthec.personnage.exceptions.EntityNotFoundException;
 import fr.vinthec.personnage.exceptions.NotFoundException;
@@ -31,12 +38,14 @@ import fr.vinthec.personnage.modele.Acteur;
 import fr.vinthec.personnage.modele.Genre;
 import fr.vinthec.personnage.modele.Maison;
 import fr.vinthec.personnage.modele.Personnage;
+import fr.vinthec.personnage.modele.TypeRelation;
 import fr.vinthec.personnage.modele.Univers;
 import fr.vinthec.personnage.resources.hpapi.PersonnageApIRepo;
 import fr.vinthec.personnage.resources.hpapi.PersonnageApi;
 import fr.vinthec.personnage.resources.persistance.GenericEntitiesRepository;
 import fr.vinthec.personnage.resources.persistance.MaisonRepository;
 import fr.vinthec.personnage.resources.persistance.PersonnageRepository;
+import fr.vinthec.personnage.resources.persistance.TypeRelationRepository;
 import fr.vinthec.personnage.resources.persistance.UniversRepository;
 
 @RestController
@@ -56,6 +65,9 @@ public class Services {
 
 	@Resource
 	private transient MaisonRepository maisonRepository;
+	
+	@Resource
+	private transient TypeRelationRepository typeRelationRepository;
 
 	@GetMapping("/test")
 	public Maison inventeMaison() {
@@ -73,12 +85,38 @@ public class Services {
 
 	}
 
+	
+	public void setRelation(Map<String, Personnage> personnages, String nomTypeRelation, Personnage personnage, Iterable<String> nomAutresPersos, Predicate<Personnage> perdicate) {
 
+		TypeRelation typeRelation = typeRelationRepository.findByDesignation(nomTypeRelation).orElseGet(() ->typeRelationRepository.save(new TypeRelation(nomTypeRelation)) ); 
+		for (String nom : nomAutresPersos) {
+			Personnage autrePersonnage = personnages.get(nom);
+			if(autrePersonnage != null && perdicate.test(autrePersonnage)) {
+				personnage
+				.addRelation(autrePersonnage,typeRelation);
+			}		
+		}
+	
+	}
+
+	
 	@GetMapping("tmp/GOT")
 	@Transactional
 	public String tmp_4() {
 		Univers univers = universRepository.save(new Univers("Game of Thrones"));
-		addPersonnage(univers, personnageApIRepo::findPersonnagesGOT);
+		List<PersonnageApi> personnageApi = personnageApIRepo.findPersonnagesGOT();
+		 Map<String, Personnage> personnages = addPersonnage(univers, personnageApi);
+		 for (PersonnageApi api : personnageApi) {
+			Personnage perso = personnages.get(api.getName());
+			setRelation(personnages, "père", perso, api.getFather().stream().collect(Collectors.toList()), Predicates.alwaysTrue() );
+			setRelation(personnages, "mère", perso, api.getMother().stream().collect(Collectors.toList()), Predicates.alwaysTrue() );
+			setRelation(personnages, "frère", perso, api.getSiblings(),p->p.getGenre().equals(Genre.MASCULIN) );
+			setRelation(personnages, "soeur", perso, api.getSiblings(),p->p.getGenre().equals(Genre.FEMININ) );
+			setRelation(personnages, "marié", perso, api.getSpouse(),Predicates.alwaysTrue()  );
+			setRelation(personnages, "amant", perso, api.getLovers(),Predicates.alwaysTrue() );
+			
+			personnageRepository.save(perso);	
+		}
 		return "OK";
 	}
 
@@ -89,12 +127,14 @@ public class Services {
 	@Transactional
 	public String tmp_3() {
 		Univers univers = universRepository.save(new Univers("Harry Potter"));
-		addPersonnage(univers, personnageApIRepo::findPersonnagesHP);
+		List<PersonnageApi> personnageApi = personnageApIRepo.findPersonnagesHP();
+		addPersonnage(univers, personnageApi);
 		return "OK";
 	}
 
-	public void addPersonnage(Univers univers, Supplier<Iterable<? extends PersonnageApi>> supplier) {
-		for (PersonnageApi persoAPI : supplier.get()) {
+	public Map<String, Personnage> addPersonnage(Univers univers, List<PersonnageApi> personnagesApi) {
+		Map<String, Personnage> ret = Maps.newHashMap();
+		for (PersonnageApi persoAPI : personnagesApi) {
 			String houseName = Strings.isNullOrEmpty(persoAPI.getHouse()) ? persoAPI.getName() : persoAPI.getHouse();
 			Maison maison = maisonRepository.findByNomAndUnivers(houseName, univers)
 					.orElseGet(() -> maisonRepository.save(new Maison(houseName, univers)));
@@ -107,8 +147,10 @@ public class Services {
 					p.addActeur(new Acteur(persoAPI.getActor().get(), null));
 				}
 			});
-			personnageRepository.save(p);
+			ret.put(p.getNom(),personnageRepository.save(p));
 		}
+		
+		return ret;
 	}
 
 	@PostMapping("/tmp/HP/age")

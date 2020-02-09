@@ -31,14 +31,16 @@ public class Relation {
 	public Relation() {
 	}
 
-	public Relation( Personnage cible, TypeRelation type, int niveau) {
+	public Relation( Personnage cible, TypeRelation type, int niveau , Personnage source) {
 		this.niveau = niveau;
 		this.cible = cible;
 		this.type = type;
+		this.source = source;
 	}
 	public Relation( int niveau, Relation relation) {
 		this.niveau = niveau;
 		this.cible = relation.source;
+		this.source = relation.cible;
 		this.type = relation.type;
 		this.reciproque = relation;
 		relation.reciproque= this;
