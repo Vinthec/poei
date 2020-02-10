@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import fr.vinthec.personnage.modele.GestionPersonnageServices;
 import fr.vinthec.personnage.modele.entities.Maison;
@@ -48,8 +49,8 @@ public class MigrationService {
 		Map<String, Personnage> personnages = addPersonnage(univers, personnageApi);
 		for (PersonnageApi api : personnageApi) {
 			Personnage perso = personnages.get(api.getName());
-			setRelation(personnages, "père", perso, api.getFather().stream().collect(Collectors.toList()), Predicates.alwaysTrue());
-			setRelation(personnages, "mère", perso, api.getMother().stream().collect(Collectors.toList()), Predicates.alwaysTrue());
+			setRelation(personnages, "père", perso,api.getFather().map(r -> Sets.newHashSet(r)).orElse(Sets.newHashSet()), Predicates.alwaysTrue());
+			setRelation(personnages, "mère", perso,  api.getMother().map(r -> Sets.newHashSet(r)).orElse(Sets.newHashSet()), Predicates.alwaysTrue());
 			setRelation(personnages, "frère", perso, api.getSiblings(), p -> p.getGenre().equals(Genre.MASCULIN));
 			setRelation(personnages, "soeur", perso, api.getSiblings(), p -> p.getGenre().equals(Genre.FEMININ));
 			setRelation(personnages, "marié", perso, api.getSpouse(), Predicates.alwaysTrue());
@@ -61,7 +62,13 @@ public class MigrationService {
 
 	}
 
-	private Map<String, Genre> genres = Map.of("male", Genre.MASCULIN, "female", Genre.FEMININ);
+	private Map<String, Genre> genres = Maps.newHashMap();
+	{
+		genres.put("male", Genre.MASCULIN);
+		genres.put("female", Genre.FEMININ);
+	}
+			
+	
 	private Pattern namePattern = Pattern.compile("\\h*(?<prenom>\\w+)\\h+(?<nom>.+)\\h*");
 
 	Map<String, Personnage> addPersonnage(Univers univers, List<PersonnageApi> personnagesApi) {
