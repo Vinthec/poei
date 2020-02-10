@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.resources.hpapi.impl;
+package fr.vinthec.personnage.module.persoApi.resources.impl;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.common.collect.Lists;
 
-import fr.vinthec.personnage.resources.hpapi.PersonnageApIRepo;
-import fr.vinthec.personnage.resources.hpapi.PersonnageApi;
+import fr.vinthec.personnage.module.persoApi.resources.PersonnageApIRepo;
+import fr.vinthec.personnage.module.persoApi.resources.PersonnageApi;
 
 @Component
-public class PersonnageAPIRepoImpl implements PersonnageApIRepo {
+public class PersonnageApiRepoImpl implements PersonnageApIRepo {
 
 	@Resource
 	private transient RestTemplate restTemplate;

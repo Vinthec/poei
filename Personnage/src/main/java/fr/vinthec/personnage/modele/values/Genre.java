@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.modele;
+package fr.vinthec.personnage.modele.values;
 
 public enum Genre {
 

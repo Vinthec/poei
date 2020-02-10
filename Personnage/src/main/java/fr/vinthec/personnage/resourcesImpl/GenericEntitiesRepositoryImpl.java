@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.resources.persistance.impl;
+package fr.vinthec.personnage.resourcesImpl;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import fr.vinthec.personnage.exceptions.EntityNotFoundException;
-import fr.vinthec.personnage.resources.persistance.GenericEntitiesRepository;
+import fr.vinthec.personnage.modele.resources.repositories.GenericEntitiesRepository;
 
 
 @Component

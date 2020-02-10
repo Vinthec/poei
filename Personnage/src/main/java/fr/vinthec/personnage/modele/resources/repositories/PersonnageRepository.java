@@ -1,10 +1,10 @@
-package fr.vinthec.personnage.resources.persistance;
+package fr.vinthec.personnage.modele.resources.repositories;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import fr.vinthec.personnage.modele.Personnage;
+import fr.vinthec.personnage.modele.entities.Personnage;
 
 public interface PersonnageRepository  extends JpaRepository<Personnage, Long>{
 

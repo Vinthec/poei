@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.resources.persistance;
+package fr.vinthec.personnage.modele.resources.repositories;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import fr.vinthec.personnage.modele.Univers;
+import fr.vinthec.personnage.modele.entities.Univers;
 
 public interface UniversRepository extends JpaRepository<Univers, Long> {
 	

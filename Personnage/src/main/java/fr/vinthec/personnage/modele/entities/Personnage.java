@@ -1,9 +1,8 @@
-package fr.vinthec.personnage.modele;
+package fr.vinthec.personnage.modele.entities;
 
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,8 +16,10 @@ import org.hibernate.annotations.NaturalId;
 
 import com.google.common.collect.Sets;
 
+import fr.vinthec.personnage.modele.values.Genre;
+
 @Entity
-public class Personnage {
+public class Personnage  extends AbstractEntity<Long> {
 
 	@Id
 	@GeneratedValue
@@ -61,8 +62,10 @@ public class Personnage {
 	}
 
 
-	public void addActeur(Acteur acteur) {
-		acteurs.add(acteur);
+	public Acteur addActeur(String nom, String prenom) {
+		Acteur a = new Acteur(nom, prenom);
+		acteurs.add(a);
+		return a;
 	}
 	
 	
@@ -77,30 +80,7 @@ public class Personnage {
 		this.maison = maison;
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Personnage other = (Personnage) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
 
 	public Set<Acteur> getActeurs() {
 		return Sets.newHashSet(acteurs);

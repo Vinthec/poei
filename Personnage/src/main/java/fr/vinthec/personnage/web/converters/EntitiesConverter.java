@@ -15,7 +15,7 @@ import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.stereotype.Component;
 
 import fr.vinthec.personnage.exceptions.EntityNotFoundException;
-import fr.vinthec.personnage.modele.AbstractEntity;
+import fr.vinthec.personnage.modele.entities.AbstractEntity;
 
 
 @Component
@@ -25,7 +25,7 @@ public class EntitiesConverter implements GenericConverter {
 	private transient GenericConversionService genericConversionService;
 
 	@Resource
-	private transient fr.vinthec.personnage.resources.persistance.GenericEntitiesRepository repository;
+	private transient fr.vinthec.personnage.modele.resources.repositories.GenericEntitiesRepository repository;
 
 	@FunctionalInterface
 	private static interface LongGetter<T extends AbstractEntity<Long>> {

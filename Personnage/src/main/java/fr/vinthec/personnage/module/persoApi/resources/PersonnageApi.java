@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.resources.hpapi;
+package fr.vinthec.personnage.module.persoApi.resources;
 
 import java.util.Optional;
 import java.util.Set;

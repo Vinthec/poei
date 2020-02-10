@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.resources;
+package fr.vinthec.personnage.module.persoApi.resources.impl;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

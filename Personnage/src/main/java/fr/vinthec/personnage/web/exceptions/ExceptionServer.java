@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.web;
+package fr.vinthec.personnage.web.exceptions;
 
 public class ExceptionServer {
 	private String type;

@@ -1,4 +1,4 @@
-package fr.vinthec.personnage.resources.persistance;
+package fr.vinthec.personnage.modele.resources.repositories;
 
 import java.io.Serializable;
 
@@ -19,6 +19,5 @@ public interface GenericEntitiesRepository {
 	<T> void delete(Iterable<T> entities, Class<T> cl);
 
 	<T> Iterable<T> findAll(Class<T> cl);
-	
 
 }
